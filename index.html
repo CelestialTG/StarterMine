@@ -3,56 +3,61 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Minecraft Mod Finder</title>
+    <title>MC MODS // 2026 MAXIMALISM</title>
+    <!-- Подключаем современные шрифты: футуристичный Outfit и пиксельный для акцентов -->
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;500;800;900&family=Pixelify+Sans:wght@700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
-    <!-- Подключаем пиксельный шрифт от Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400;500;700&display=swap" rel="stylesheet">
 </head>
 <body>
-    <div class="mc-container">
-        <header class="mc-header">
-            <h1>Поиск модов и плагинов</h1>
-            <p>Выберите версию и загрузчик для начала</p>
+    <!-- Плавающие неоновые сферы на фоне -->
+    <div class="bg-orbs">
+        <div class="orb orb-1"></div>
+        <div class="orb orb-2"></div>
+        <div class="orb orb-3"></div>
+    </div>
+
+    <main class="glass-container">
+        <header class="max-header">
+            <h1 class="glitch-title" data-text="MOD_NEXUS">MOD_NEXUS</h1>
+            <p class="subtitle">УЛЬТРА-ПОИСК ДЛЯ MINECRAFT</p>
         </header>
 
-        <section class="mc-filters">
-            <div class="mc-input-group">
-                <label for="version-select">Версия Minecraft:</label>
-                <select id="version-select" class="mc-select">
-                    <!-- Можно добавить больше версий -->
+        <section class="max-filters">
+            <div class="input-wrapper">
+                <label>ВЕРСИЯ</label>
+                <select id="version-select" class="glass-input">
+                    <option value="1.21.11">1.21.11 (Latest)</option>
+                    <option value="1.21.10">1.21.10</option>
                     <option value="1.21.4">1.21.4</option>
                     <option value="1.21.1">1.21.1</option>
-                    <option value="1.20.4">1.20.4</option>
+                    <option value="1.20.6">1.20.6</option>
                     <option value="1.20.1">1.20.1</option>
                     <option value="1.19.4">1.19.4</option>
-                    <option value="1.16.5">1.16.5</option>
                 </select>
             </div>
 
-            <div class="mc-input-group">
-                <label for="loader-select">Загрузчик:</label>
-                <select id="loader-select" class="mc-select">
+            <div class="input-wrapper">
+                <label>ЗАГРУЗЧИК</label>
+                <select id="loader-select" class="glass-input">
                     <option value="fabric">Fabric</option>
                     <option value="forge">Forge</option>
                     <option value="neoforge">NeoForge</option>
-                    <option value="quilt">Quilt</option>
                     <option value="paper">Paper (Плагины)</option>
                 </select>
             </div>
 
-            <div class="mc-input-group">
-                <label for="search-input">Поиск по названию:</label>
-                <input type="text" id="search-input" class="mc-input" placeholder="Например: JEI...">
+            <div class="input-wrapper search-wrapper">
+                <label>ИМЯ МОДА</label>
+                <input type="text" id="search-input" class="glass-input" placeholder="НАПРИМЕР: SODIUM...">
             </div>
 
-            <button id="search-btn" class="mc-btn">Найти</button>
+            <button id="search-btn" class="neon-btn">ИСКАТЬ // ENTG</button>
         </section>
 
-        <section id="results" class="mc-results">
-            <!-- Сюда будут подгружаться моды -->
-            <div class="mc-message">Нажмите "Найти", чтобы загрузить моды.</div>
+        <section id="results" class="max-results">
+            <div class="status-message">ОЖИДАНИЕ ВВОДА...</div>
         </section>
-    </div>
+    </main>
 
     <script src="script.js"></script>
 </body>
