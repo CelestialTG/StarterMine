@@ -3,14 +3,15 @@ document.addEventListener('DOMContentLoaded', () => {
     let currentPage = 1;
     const limit = 24;
     let currentCategory = ""; 
-    let selectedMods = []; // Наша Корзина
-    let loadedModsData = []; // Сохраняем моды текущей страницы
+    let selectedMods = []; 
+    let loadedModsData = []; 
 
     // --- ЭЛЕМЕНТЫ DOM ---
     const searchBtn = document.getElementById('search-btn');
     const searchInput = document.getElementById('search-input');
     const versionSelect = document.getElementById('version-select');
     const loaderSelect = document.getElementById('loader-select');
+    const typeSelect = document.getElementById('type-select'); // Тип контента
     const resultsContainer = document.getElementById('results');
     
     // Пагинация
@@ -31,13 +32,26 @@ document.addEventListener('DOMContentLoaded', () => {
     versionSelect.addEventListener('change', () => { currentPage = 1; fetchMods(); });
     loaderSelect.addEventListener('change', () => { currentPage = 1; fetchMods(); });
 
+    // Обработка смены типа контента (Моды, Шейдеры, Текстуры)
+    typeSelect.addEventListener('change', () => {
+        currentPage = 1;
+        // Шейдерам и Ресурспакам не нужен Fabric/Forge. Отключаем кнопку загрузчика для красоты.
+        if (typeSelect.value === 'shader' || typeSelect.value === 'resourcepack') {
+            loaderSelect.disabled = true;
+            loaderSelect.style.opacity = '0.3';
+            loaderSelect.style.cursor = 'not-allowed';
+        } else {
+            loaderSelect.disabled = false;
+            loaderSelect.style.opacity = '1';
+            loaderSelect.style.cursor = 'pointer';
+        }
+        fetchMods();
+    });
+
     // Смарт-теги (Категории)
     document.querySelectorAll('.tag-btn').forEach(btn => {
         btn.addEventListener('click', (e) => {
-            // Убираем класс у других
             document.querySelectorAll('.tag-btn').forEach(b => b.classList.remove('active'));
-            
-            // Если кликнули по уже активному — сбрасываем фильтр
             if (currentCategory === e.target.dataset.tag) {
                 currentCategory = "";
             } else {
@@ -57,13 +71,14 @@ document.addEventListener('DOMContentLoaded', () => {
     clearCartBtn.addEventListener('click', clearCart);
     downloadAllBtn.addEventListener('click', downloadAllCart);
 
-    // Первоначальная загрузка
+    // Первоначальная загрузка при открытии сайта
     fetchMods();
 
-    // --- ГЛАВНАЯ ФУНКЦИЯ ПОЛУЧЕНИЯ МОДОВ ---
+    // --- ГЛАВНАЯ ФУНКЦИЯ ПОЛУЧЕНИЯ ДАННЫХ ИЗ API ---
     async function fetchMods() {
         const version = versionSelect.value;
         const loader = loaderSelect.value;
+        const contentType = typeSelect.value;
         const query = searchInput.value;
         const offset = (currentPage - 1) * limit;
 
@@ -72,13 +87,18 @@ document.addEventListener('DOMContentLoaded', () => {
         prevBtn.disabled = currentPage === 1;
 
         try {
+            // Базовые фильтры (Версия и Тип контента)
             const facets = [
                 [`versions:${version}`],
-                [`categories:${loader}`],
-                ["project_type:mod", "project_type:plugin"]
+                [`project_type:${contentType}`]
             ];
 
-            // Если выбран смарт-тег, добавляем его в фильтры
+            // Загрузчик добавляем только если это моды или модпаки
+            if (contentType === 'mod' || contentType === 'modpack') {
+                facets.push([`categories:${loader}`]);
+            }
+
+            // Добавляем смарт-тег, если он нажат
             if (currentCategory) {
                 facets.push([`categories:${currentCategory}`]);
             }
@@ -95,7 +115,7 @@ document.addEventListener('DOMContentLoaded', () => {
             const data = await response.json();
             loadedModsData = data.hits;
             
-            // Если следующей страницы нет, блокируем кнопку "Вперед"
+            // Если результатов меньше лимита, значит следующей страницы нет
             nextBtn.disabled = data.hits.length < limit;
 
             displayResults(loadedModsData);
@@ -104,12 +124,12 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // --- ОТОБРАЖЕНИЕ РЕЗУЛЬТАТОВ ---
+    // --- ОТОБРАЖЕНИЕ РЕЗУЛЬТАТОВ (КАРТОЧКИ) ---
     function displayResults(mods) {
         resultsContainer.innerHTML = '';
 
         if (mods.length === 0) {
-            resultsContainer.innerHTML = '<div class="status-message">ПУСТО. ИЗМЕНИТЕ ЗАПРОС.</div>';
+            resultsContainer.innerHTML = '<div class="status-message">ПУСТО. ИЗМЕНИТЕ ЗАПРОС ИЛИ ВЕРСИЮ.</div>';
             return;
         }
 
@@ -121,7 +141,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
             const iconUrl = mod.icon_url || 'https://docs.modrinth.com/img/logo.svg';
             
-            // Умная обрезка описания
             let shortDesc = mod.description;
             if (shortDesc.length > 90) shortDesc = shortDesc.substring(0, 90) + '...';
 
@@ -145,26 +164,24 @@ document.addEventListener('DOMContentLoaded', () => {
             resultsContainer.appendChild(card);
             applyVanillaTilt(card);
 
-            // Обработчики кнопок
+            // Назначаем события кнопкам внутри карточки
             card.querySelector('.download-btn').addEventListener('click', (e) => directDownloadSingle(mod.project_id, e.target));
             card.querySelector('.select-btn').addEventListener('click', () => toggleModSelection(mod, card));
             card.querySelector('.translate-btn').addEventListener('click', (e) => translateDescription(e, card.querySelector('.mod-desc'), mod.description));
         });
     }
 
-    // --- ФУНКЦИЯ ПЕРЕВОДА (Через публичное API Google) ---
+    // --- ПЕРЕВОДЧИК ---
     async function translateDescription(event, descElement, fullText) {
         const btn = event.target;
-        if (btn.dataset.translated === "true") return; // Уже переведено
+        if (btn.dataset.translated === "true") return;
 
         btn.innerText = "⏳";
         try {
-            // Используем обходной CORS-маршрут Google Translate API
             const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=auto&tl=ru&dt=t&q=${encodeURIComponent(fullText)}`;
             const res = await fetch(url);
             const data = await res.json();
             
-            // Собираем текст из массива ответов
             let translatedText = "";
             data[0].forEach(item => translatedText += item[0]);
 
@@ -180,18 +197,16 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // --- ЛОГИКА КОРЗИНЫ И ВЫДЕЛЕНИЯ ---
+    // --- ЛОГИКА ВЫДЕЛЕНИЯ И КОРЗИНЫ ---
     function toggleModSelection(mod, cardElement) {
         const index = selectedMods.findIndex(m => m.id === mod.project_id);
         const selectBtn = cardElement.querySelector('.select-btn');
 
         if (index === -1) {
-            // Добавляем
             selectedMods.push({ id: mod.project_id, title: mod.title });
             cardElement.classList.add('selected');
             selectBtn.innerText = 'УБРАТЬ';
         } else {
-            // Удаляем
             selectedMods.splice(index, 1);
             cardElement.classList.remove('selected');
             selectBtn.innerText = 'В СБОРКУ';
@@ -202,7 +217,6 @@ document.addEventListener('DOMContentLoaded', () => {
     function removeModFromCart(id) {
         selectedMods = selectedMods.filter(m => m.id !== id);
         updateCartUI();
-        // Обновляем карточку визуально, если она сейчас на экране
         const card = document.querySelector(`.mod-card[data-id="${id}"]`);
         if (card) {
             card.classList.remove('selected');
@@ -213,7 +227,6 @@ document.addEventListener('DOMContentLoaded', () => {
     function clearCart() {
         selectedMods = [];
         updateCartUI();
-        // Снимаем выделение со всех видимых карточек
         document.querySelectorAll('.mod-card.selected').forEach(card => {
             card.classList.remove('selected');
             card.querySelector('.select-btn').innerText = 'В СБОРКУ';
@@ -222,7 +235,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     function updateCartUI() {
         cartCount.innerText = selectedMods.length;
-        
         if (selectedMods.length > 0) {
             cartPanel.classList.add('visible');
         } else {
@@ -242,7 +254,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // --- МАССОВАЯ ЗАГРУЗКА ИЗ КОРЗИНЫ ---
+    // --- МАССОВОЕ СКАЧИВАНИЕ ИЗ КОРЗИНЫ ---
     async function downloadAllCart() {
         if (selectedMods.length === 0) return;
         
@@ -259,7 +271,6 @@ document.addEventListener('DOMContentLoaded', () => {
             try {
                 const url = await getDownloadUrl(mod.id);
                 if (url) {
-                    // Создаем ссылку и кликаем
                     const a = document.createElement('a');
                     a.href = url;
                     a.download = ''; 
@@ -268,7 +279,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     document.body.removeChild(a);
                     successCount++;
                 }
-                // ИСКУССТВЕННАЯ ЗАДЕРЖКА (1 сек), чтобы браузер не заблокировал массовое скачивание!
+                // Задержка 1 сек между скачиваниями, чтобы браузер не заблокировал
                 await new Promise(r => setTimeout(r, 1000));
             } catch (e) {
                 console.error("Ошибка при загрузке", mod.title);
@@ -282,11 +293,11 @@ document.addEventListener('DOMContentLoaded', () => {
             downloadAllBtn.innerText = originalText;
             downloadAllBtn.disabled = false;
             downloadAllBtn.style.background = 'var(--neon-green)';
-            if(successCount === selectedMods.length) clearCart(); // Очищаем корзину после успешной скачки
+            if(successCount === selectedMods.length) clearCart(); 
         }, 3000);
     }
 
-    // --- ОДИНОЧНАЯ ЗАГРУЗКА ---
+    // --- ОДИНОЧНОЕ СКАЧИВАНИЕ ---
     async function directDownloadSingle(projectId, btnElement) {
         const originalText = btnElement.innerText;
         btnElement.innerText = 'ПОИСК...';
@@ -316,14 +327,22 @@ document.addEventListener('DOMContentLoaded', () => {
         }, 3000);
     }
 
-    // Функция, которая находит физическую ссылку на .jar файл в API Modrinth
+    // --- УМНЫЙ ПОИСК ССЫЛКИ НА ФАЙЛ В API ---
     async function getDownloadUrl(projectId) {
         const version = versionSelect.value;
         const loader = loaderSelect.value;
-        const queryParams = new URLSearchParams({
-            loaders: JSON.stringify([loader]),
-            game_versions: JSON.stringify([version])
-        });
+        const contentType = typeSelect.value;
+        
+        // Базовый параметр: Версия игры
+        let queryParamsObj = { game_versions: JSON.stringify([version]) };
+        
+        // Если это мод или модпак, добавляем загрузчик (Fabric/Forge)
+        // Шейдерам и Ресурспакам это условие не нужно!
+        if (contentType === 'mod' || contentType === 'modpack') {
+            queryParamsObj.loaders = JSON.stringify([loader]);
+        }
+
+        const queryParams = new URLSearchParams(queryParamsObj);
 
         const response = await fetch(`https://api.modrinth.com/v2/project/${projectId}/version?${queryParams.toString()}`);
         if (!response.ok) return null;
@@ -331,6 +350,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const versionsData = await response.json();
         if (versionsData.length === 0) return null;
 
+        // Берем самый первый (актуальный) файл
         const latestVersion = versionsData[0];
         const primaryFile = latestVersion.files.find(f => f.primary) || latestVersion.files[0];
         return primaryFile.url;
