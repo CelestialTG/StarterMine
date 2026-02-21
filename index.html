@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minecraft Mod Finder</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- Подключаем пиксельный шрифт от Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400;500;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="mc-container">
+        <header class="mc-header">
+            <h1>Поиск модов и плагинов</h1>
+            <p>Выберите версию и загрузчик для начала</p>
+        </header>
+
+        <section class="mc-filters">
+            <div class="mc-input-group">
+                <label for="version-select">Версия Minecraft:</label>
+                <select id="version-select" class="mc-select">
+                    <!-- Можно добавить больше версий -->
+                    <option value="1.21.4">1.21.4</option>
+                    <option value="1.21.1">1.21.1</option>
+                    <option value="1.20.4">1.20.4</option>
+                    <option value="1.20.1">1.20.1</option>
+                    <option value="1.19.4">1.19.4</option>
+                    <option value="1.16.5">1.16.5</option>
+                </select>
+            </div>
+
+            <div class="mc-input-group">
+                <label for="loader-select">Загрузчик:</label>
+                <select id="loader-select" class="mc-select">
+                    <option value="fabric">Fabric</option>
+                    <option value="forge">Forge</option>
+                    <option value="neoforge">NeoForge</option>
+                    <option value="quilt">Quilt</option>
+                    <option value="paper">Paper (Плагины)</option>
+                </select>
+            </div>
+
+            <div class="mc-input-group">
+                <label for="search-input">Поиск по названию:</label>
+                <input type="text" id="search-input" class="mc-input" placeholder="Например: JEI...">
+            </div>
+
+            <button id="search-btn" class="mc-btn">Найти</button>
+        </section>
+
+        <section id="results" class="mc-results">
+            <!-- Сюда будут подгружаться моды -->
+            <div class="mc-message">Нажмите "Найти", чтобы загрузить моды.</div>
+        </section>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
