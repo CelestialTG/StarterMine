@@ -10,84 +10,119 @@
 * { box-sizing: border-box; margin: 0; padding: 0; }
 
 body {
-    font-family: 'Outfit', sans-serif;
-    background-color: var(--bg-dark);
-    color: #fff;
-    min-height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: flex-start;
-    padding: 40px 20px;
-    overflow-x: hidden;
-    position: relative;
+    font-family: 'Outfit', sans-serif; background-color: var(--bg-dark); color: #fff;
+    min-height: 100vh; display: flex; justify-content: center; align-items: flex-start;
+    padding: 40px 20px; overflow-x: hidden; position: relative; padding-bottom: 120px; /* Отступ для корзины */
 }
 
-.bg-orbs {
-    position: fixed; top: 0; left: 0; width: 100vw; height: 100vh;
-    z-index: -1; overflow: hidden; filter: blur(100px); pointer-events: none;
-}
+/* Фон */
+.bg-orbs { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: -1; filter: blur(100px); pointer-events: none; }
 .orb { position: absolute; border-radius: 50%; animation: float 15s infinite alternate ease-in-out; }
 .orb-1 { width: 500px; height: 500px; background: var(--neon-purple); top: -100px; left: -100px; }
 .orb-2 { width: 600px; height: 600px; background: var(--neon-blue); bottom: -200px; right: -100px; animation-delay: -5s; }
 .orb-3 { width: 400px; height: 400px; background: var(--neon-green); top: 40%; left: 40%; animation-delay: -10s; opacity: 0.5; }
 @keyframes float { 0% { transform: translate(0, 0) scale(1); } 100% { transform: translate(100px, 50px) scale(1.2); } }
 
+/* Основа */
 .glass-container {
-    background: var(--glass-bg); backdrop-filter: blur(30px); -webkit-backdrop-filter: blur(30px);
-    border: 1px solid var(--glass-border); border-radius: 40px; padding: 50px;
-    width: 100%; max-width: 1400px; box-shadow: 0 30px 60px rgba(0,0,0,0.5), inset 0 0 20px rgba(255,255,255,0.05); z-index: 1;
+    background: var(--glass-bg); backdrop-filter: blur(30px); border: 1px solid var(--glass-border);
+    border-radius: 40px; padding: 50px; width: 100%; max-width: 1400px;
+    box-shadow: 0 30px 60px rgba(0,0,0,0.5), inset 0 0 20px rgba(255,255,255,0.05); z-index: 1;
 }
 
-.max-header { text-align: center; margin-bottom: 50px; }
+.max-header { text-align: center; margin-bottom: 40px; }
 .glitch-title {
     font-size: clamp(3rem, 8vw, 5rem); font-weight: 900; letter-spacing: -2px;
     background: linear-gradient(90deg, var(--neon-blue), var(--neon-purple));
     -webkit-background-clip: text; -webkit-text-fill-color: transparent; text-transform: uppercase;
 }
-.subtitle { font-family: 'Pixelify Sans', cursive; color: var(--neon-green); font-size: 1.5rem; letter-spacing: 5px; margin-top: -10px; }
+.subtitle { font-family: 'Pixelify Sans', cursive; color: var(--neon-green); font-size: 1.5rem; letter-spacing: 5px; }
 
-.max-filters { display: flex; flex-wrap: wrap; gap: 20px; margin-bottom: 50px; align-items: flex-end; }
+/* Фильтры и Инпуты */
+.max-filters { display: flex; flex-wrap: wrap; gap: 20px; margin-bottom: 20px; align-items: flex-end; }
 .input-wrapper { display: flex; flex-direction: column; flex: 1; min-width: 250px; }
 .search-wrapper { flex: 2; }
 .input-wrapper label { font-size: 0.9rem; font-weight: 800; color: rgba(255,255,255,0.5); margin-bottom: 8px; letter-spacing: 2px; }
 .glass-input {
     background: rgba(0, 0, 0, 0.4); border: 1px solid var(--glass-border); border-radius: 16px;
-    padding: 18px 24px; color: #fff; font-size: 1.2rem; font-family: 'Outfit', sans-serif;
-    font-weight: 500; outline: none; transition: 0.3s;
+    padding: 18px 24px; color: #fff; font-size: 1.2rem; font-family: 'Outfit', sans-serif; font-weight: 500; outline: none; transition: 0.3s;
 }
-select.glass-input { cursor: pointer; }
 .glass-input:focus { border-color: var(--neon-blue); box-shadow: 0 0 20px rgba(0, 240, 255, 0.3); }
 
+/* Смарт Теги */
+.smart-tags { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 40px; justify-content: center; }
+.tag-btn {
+    background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: #fff;
+    padding: 8px 16px; border-radius: 20px; cursor: pointer; transition: 0.3s; font-family: 'Outfit'; font-weight: 600;
+}
+.tag-btn:hover, .tag-btn.active { background: var(--neon-blue); color: #000; border-color: var(--neon-blue); box-shadow: 0 0 15px var(--neon-blue); }
+
+/* Кнопки */
 .neon-btn {
     background: linear-gradient(45deg, var(--neon-purple), #ff007f); color: #fff; border: none;
-    border-radius: 16px; padding: 18px 40px; font-size: 1.2rem; font-weight: 900;
-    font-family: 'Outfit', sans-serif; cursor: pointer; text-transform: uppercase;
-    letter-spacing: 2px; transition: 0.3s; box-shadow: 0 10px 30px rgba(176, 38, 255, 0.4); height: 61px;
+    border-radius: 16px; padding: 18px 40px; font-size: 1.2rem; font-weight: 900; font-family: 'Outfit', sans-serif;
+    cursor: pointer; text-transform: uppercase; transition: 0.3s; box-shadow: 0 10px 30px rgba(176, 38, 255, 0.4); height: 61px;
 }
-.neon-btn:hover { transform: translateY(-5px) scale(1.02); box-shadow: 0 15px 40px rgba(176, 38, 255, 0.7); }
+.neon-btn:hover { transform: translateY(-5px); box-shadow: 0 15px 40px rgba(176, 38, 255, 0.7); }
 
-.max-results { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 30px; perspective: 1000px; }
+/* Карточки Модов */
+.max-results { display: grid; grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); gap: 30px; perspective: 1000px; margin-bottom: 50px; }
 .mod-card {
     background: rgba(20, 20, 20, 0.6); border: 1px solid rgba(255,255,255,0.05);
     border-radius: 24px; padding: 24px; display: flex; flex-direction: column; position: relative;
-    overflow: hidden; transform-style: preserve-3d; transition: box-shadow 0.3s, border-color 0.3s;
+    transform-style: preserve-3d; transition: 0.3s;
 }
-.mod-card:hover { border-color: var(--neon-blue); box-shadow: 0 20px 50px rgba(0, 240, 255, 0.15); }
-.mod-card::before { content: ''; position: absolute; top: 0; left: 0; width: 4px; height: 100%; background: var(--neon-green); border-radius: 24px 0 0 24px; }
-.mod-card-header { display: flex; align-items: center; gap: 15px; margin-bottom: 20px; transform: translateZ(30px); }
-.mod-card img { width: 70px; height: 70px; border-radius: 16px; image-rendering: pixelated; box-shadow: 0 10px 20px rgba(0,0,0,0.5); background: #222; }
-.mod-card h3 { font-size: 1.5rem; font-weight: 800; line-height: 1.1; }
-.mod-card p { font-size: 1rem; color: #aaa; flex-grow: 1; margin-bottom: 25px; font-weight: 300; line-height: 1.5; transform: translateZ(20px); }
+/* Эффект для выбранного мода */
+.mod-card.selected {
+    border-color: var(--neon-green); box-shadow: 0 0 30px rgba(57, 255, 20, 0.2);
+}
+.mod-card.selected::before { background: var(--neon-green); }
 
-/* Кнопка скачивания прямиком из карточки */
-.download-btn {
-    border: none;
-    color: var(--bg-dark); background: var(--neon-green);
-    padding: 12px 20px; border-radius: 12px; font-weight: 800; font-family: 'Outfit', sans-serif;
-    text-align: center; text-transform: uppercase; letter-spacing: 1px;
-    cursor: pointer; transition: 0.3s; transform: translateZ(40px); font-size: 1rem;
+.mod-card::before { content: ''; position: absolute; top: 0; left: 0; width: 4px; height: 100%; background: var(--neon-purple); border-radius: 24px 0 0 24px; transition: 0.3s; }
+.mod-card-header { display: flex; align-items: center; gap: 15px; margin-bottom: 10px; transform: translateZ(30px); }
+.mod-card img { width: 60px; height: 60px; border-radius: 12px; image-rendering: pixelated; box-shadow: 0 10px 20px rgba(0,0,0,0.5); }
+.mod-card h3 { font-size: 1.3rem; font-weight: 800; line-height: 1.1; display: flex; align-items: center; gap: 10px; }
+
+/* Кнопка перевода */
+.translate-btn { background: none; border: none; cursor: pointer; font-size: 1.2rem; filter: grayscale(1); transition: 0.3s; }
+.translate-btn:hover { filter: grayscale(0); transform: scale(1.2); }
+
+.mod-desc { font-size: 0.95rem; color: #aaa; flex-grow: 1; margin-bottom: 25px; font-weight: 300; line-height: 1.4; transform: translateZ(20px); }
+
+.card-actions { display: flex; gap: 10px; transform: translateZ(40px); }
+.download-btn, .select-btn {
+    border: none; padding: 12px; border-radius: 12px; font-weight: 800; font-family: 'Outfit';
+    text-align: center; cursor: pointer; transition: 0.3s; flex: 1;
 }
-.download-btn:hover { background: #fff; box-shadow: 0 0 20px var(--neon-green); }
-.download-btn:disabled { background: #555; cursor: not-allowed; box-shadow: none; }
+.download-btn { background: var(--neon-blue); color: #000; }
+.download-btn:hover { background: #fff; box-shadow: 0 0 20px var(--neon-blue); }
+.select-btn { background: transparent; border: 2px solid var(--neon-green); color: var(--neon-green); }
+.select-btn:hover, .mod-card.selected .select-btn { background: var(--neon-green); color: #000; box-shadow: 0 0 20px var(--neon-green); }
 
 .status-message { grid-column: 1 / -1; text-align: center; font-size: 2rem; font-weight: 900; color: rgba(255,255,255,0.2); letter-spacing: 5px; padding: 50px 0; }
+
+/* Пагинация */
+.pagination { display: flex; justify-content: center; align-items: center; gap: 20px; }
+.page-btn { background: rgba(0,0,0,0.5); border: 1px solid var(--glass-border); color: #fff; padding: 15px 30px; border-radius: 12px; font-family: 'Outfit'; font-weight: 800; cursor: pointer; transition: 0.3s; }
+.page-btn:hover:not(:disabled) { background: var(--neon-purple); border-color: var(--neon-purple); box-shadow: 0 0 20px var(--neon-purple); }
+.page-btn:disabled { opacity: 0.3; cursor: not-allowed; }
+.page-info { font-size: 1.2rem; font-weight: 900; letter-spacing: 2px; color: var(--neon-blue); }
+
+/* ПЛАВАЮЩАЯ КОРЗИНА */
+.cart-panel {
+    position: fixed; bottom: 30px; right: 30px; width: 350px; background: rgba(10, 10, 10, 0.85);
+    backdrop-filter: blur(20px); border: 1px solid var(--neon-green); border-radius: 20px;
+    padding: 20px; box-shadow: 0 20px 50px rgba(0,0,0,0.8), 0 0 30px rgba(57, 255, 20, 0.2);
+    transform: translateY(150%); transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275); z-index: 100;
+}
+.cart-panel.visible { transform: translateY(0); }
+.cart-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 10px; }
+.cart-header h3 { color: var(--neon-green); font-weight: 900; }
+.icon-btn { background: none; border: none; font-size: 1.2rem; cursor: pointer; filter: grayscale(1); transition: 0.2s; }
+.icon-btn:hover { filter: grayscale(0); transform: scale(1.1); }
+.cart-items { max-height: 200px; overflow-y: auto; margin-bottom: 15px; display: flex; flex-direction: column; gap: 8px; }
+.cart-items::-webkit-scrollbar { width: 5px; }
+.cart-items::-webkit-scrollbar-thumb { background: var(--neon-green); border-radius: 5px; }
+.cart-item { display: flex; justify-content: space-between; font-size: 0.9rem; color: #ccc; background: rgba(255,255,255,0.05); padding: 8px 12px; border-radius: 8px; }
+.cart-item button { color: #ff0040; background: none; border: none; cursor: pointer; font-weight: bold; }
+.cart-download-btn { width: 100%; height: auto; padding: 15px; font-size: 1rem; background: var(--neon-green); color: #000; box-shadow: 0 5px 15px rgba(57, 255, 20, 0.3); }
