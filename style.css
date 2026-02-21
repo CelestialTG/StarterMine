@@ -1,156 +1,105 @@
-:root {
-    --mc-bg: #c6c6c6;
-    --mc-border-light: #ffffff;
-    --mc-border-dark: #555555;
-    --mc-text: #000000;
-    --mc-text-shadow: #3f3f3f;
-    --mc-hover: #5a5ba7;
-}
+document.addEventListener('DOMContentLoaded', () => {
+    const searchBtn = document.getElementById('search-btn');
+    const versionSelect = document.getElementById('version-select');
+    const loaderSelect = document.getElementById('loader-select');
+    const searchInput = document.getElementById('search-input');
+    const resultsContainer = document.getElementById('results');
 
-* {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-}
+    searchBtn.addEventListener('click', fetchMods);
 
-body {
-    font-family: 'Pixelify Sans', sans-serif;
-    background-color: #1d1d1d;
-    background-image: url('https://minecraft.wiki/images/Stone_JE5_BE3.png'); /* Текстура камня на фон */
-    background-size: 64px;
-    background-attachment: fixed;
-    color: var(--mc-text);
-    display: flex;
-    justify-content: center;
-    padding: 20px;
-}
+    searchInput.addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') fetchMods();
+    });
 
-.mc-container {
-    background-color: var(--mc-bg);
-    border-top: 4px solid var(--mc-border-light);
-    border-left: 4px solid var(--mc-border-light);
-    border-bottom: 4px solid var(--mc-border-dark);
-    border-right: 4px solid var(--mc-border-dark);
-    padding: 20px;
-    max-width: 900px;
-    width: 100%;
-    image-rendering: pixelated;
-}
+    async function fetchMods() {
+        const version = versionSelect.value;
+        const loader = loaderSelect.value;
+        const query = searchInput.value;
 
-.mc-header {
-    text-align: center;
-    margin-bottom: 20px;
-}
+        resultsContainer.innerHTML = '<div class="status-message">СИНХРОНИЗАЦИЯ БАЗ ДАННЫХ...</div>';
 
-.mc-header h1 {
-    font-size: 2.5rem;
-    color: #ffff55; /* Классический желтый цвет текста */
-    text-shadow: 2px 2px var(--mc-text-shadow);
-}
+        try {
+            // Фильтры для Modrinth (исключаем ресурспаки и модпаки)
+            const facets = [
+                [`versions:${version}`],
+                [`categories:${loader}`],
+                ["project_type:mod", "project_type:plugin"]
+            ];
 
-.mc-filters {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 15px;
-    margin-bottom: 20px;
-    align-items: flex-end;
-}
+            const url = new URL('https://api.modrinth.com/v2/search');
+            url.searchParams.append('query', query);
+            url.searchParams.append('facets', JSON.stringify(facets));
+            url.searchParams.append('limit', 24); // Выдаем сразу 24 мода для красивой сетки
 
-.mc-input-group {
-    display: flex;
-    flex-direction: column;
-    flex: 1;
-    min-width: 200px;
-}
+            const response = await fetch(url);
+            if (!response.ok) throw new Error('СБОЙ СВЯЗИ С ЯДРОМ (Modrinth API Error)');
 
-.mc-input-group label {
-    font-size: 1.2rem;
-    margin-bottom: 5px;
-}
+            const data = await response.json();
+            displayResults(data.hits);
 
-.mc-select, .mc-input {
-    font-family: 'Pixelify Sans', sans-serif;
-    font-size: 1.2rem;
-    padding: 10px;
-    background-color: #000;
-    color: #fff;
-    border-top: 2px solid var(--mc-border-dark);
-    border-left: 2px solid var(--mc-border-dark);
-    border-bottom: 2px solid var(--mc-border-light);
-    border-right: 2px solid var(--mc-border-light);
-    outline: none;
-}
+        } catch (error) {
+            resultsContainer.innerHTML = `<div class="status-message" style="color: #ff007f;">КРИТИЧЕСКАЯ ОШИБКА: ${error.message}</div>`;
+        }
+    }
 
-.mc-btn {
-    font-family: 'Pixelify Sans', sans-serif;
-    font-size: 1.2rem;
-    padding: 10px 20px;
-    background-color: var(--mc-bg);
-    cursor: pointer;
-    border-top: 3px solid var(--mc-border-light);
-    border-left: 3px solid var(--mc-border-light);
-    border-bottom: 3px solid var(--mc-border-dark);
-    border-right: 3px solid var(--mc-border-dark);
-    transition: transform 0.1s;
-}
+    function displayResults(mods) {
+        resultsContainer.innerHTML = '';
 
-.mc-btn:active {
-    border-top: 3px solid var(--mc-border-dark);
-    border-left: 3px solid var(--mc-border-dark);
-    border-bottom: 3px solid var(--mc-border-light);
-    border-right: 3px solid var(--mc-border-light);
-}
+        if (mods.length === 0) {
+            resultsContainer.innerHTML = '<div class="status-message">ОБЪЕКТЫ НЕ ОБНАРУЖЕНЫ. ИЗМЕНИТЕ ПАРАМЕТРЫ.</div>';
+            return;
+        }
 
-.mc-results {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-    gap: 15px;
-}
+        mods.forEach(mod => {
+            const card = document.createElement('div');
+            card.className = 'mod-card';
 
-.mc-card {
-    background-color: #8b8b8b;
-    border-top: 3px solid var(--mc-border-light);
-    border-left: 3px solid var(--mc-border-light);
-    border-bottom: 3px solid var(--mc-border-dark);
-    border-right: 3px solid var(--mc-border-dark);
-    padding: 10px;
-    display: flex;
-    flex-direction: column;
-}
+            const iconUrl = mod.icon_url || 'https://docs.modrinth.com/img/logo.svg';
+            const modTitle = mod.title;
+            const modDesc = mod.description.length > 90 ? mod.description.substring(0, 90) + '...' : mod.description;
+            const modLink = `https://modrinth.com/${mod.project_type}/${mod.slug}`;
 
-.mc-card img {
-    width: 64px;
-    height: 64px;
-    image-rendering: pixelated;
-    margin-bottom: 10px;
-}
+            card.innerHTML = `
+                <div class="mod-card-header">
+                    <img src="${iconUrl}" alt="Иконка ${modTitle}">
+                    <h3>${modTitle}</h3>
+                </div>
+                <p>${modDesc}</p>
+                <a href="${modLink}" target="_blank" class="download-link">ЗАГРУЗИТЬ</a>
+            `;
 
-.mc-card h3 {
-    font-size: 1.2rem;
-    margin-bottom: 5px;
-}
+            resultsContainer.appendChild(card);
+            
+            // Применяем 3D-эффект к созданной карточке
+            applyVanillaTilt(card);
+        });
+    }
 
-.mc-card p {
-    font-size: 1rem;
-    flex-grow: 1;
-    margin-bottom: 10px;
-    color: #222;
-}
+    // ----------------------------------------------------
+    // Уникальный 3D эффект наклона на чистом JavaScript
+    // ----------------------------------------------------
+    function applyVanillaTilt(element) {
+        element.addEventListener('mousemove', (e) => {
+            const rect = element.getBoundingClientRect();
+            const x = e.clientX - rect.left; // x position within the element.
+            const y = e.clientY - rect.top;  // y position within the element.
+            
+            const centerX = rect.width / 2;
+            const centerY = rect.height / 2;
+            
+            const rotateX = ((y - centerY) / centerY) * -10; // Max rotation 10deg
+            const rotateY = ((x - centerX) / centerX) * 10;
 
-.mc-card a {
-    text-decoration: none;
-    text-align: center;
-    color: #000;
-    background-color: var(--mc-bg);
-    padding: 5px;
-    border-top: 2px solid var(--mc-border-light);
-    border-left: 2px solid var(--mc-border-light);
-    border-bottom: 2px solid var(--mc-border-dark);
-    border-right: 2px solid var(--mc-border-dark);
-}
+            element.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) scale3d(1.02, 1.02, 1.02)`;
+        });
 
-.mc-message {
-    text-align: center;
-    font-size: 1.2rem;
-    grid-column: 1 / -1;
-}
+        element.addEventListener('mouseleave', () => {
+            element.style.transform = `perspective(1000px) rotateX(0deg) rotateY(0deg) scale3d(1, 1, 1)`;
+            element.style.transition = 'transform 0.5s ease';
+        });
+
+        element.addEventListener('mouseenter', () => {
+            element.style.transition = 'none'; // Убираем задержку при движении внутри
+        });
+    }
+});
