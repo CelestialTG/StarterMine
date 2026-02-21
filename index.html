@@ -17,7 +17,7 @@
     <main class="glass-container">
         <header class="max-header">
             <h1 class="glitch-title">MOD_NEXUS</h1>
-            <p class="subtitle">УМНЫЙ СБОРЩИК МОДОВ</p>
+            <p class="subtitle">УНИВЕРСАЛЬНЫЙ СБОРЩИК КОНТЕНТА</p>
         </header>
 
         <section class="max-filters">
@@ -31,6 +31,17 @@
                     <option value="1.20.6">1.20.6</option>
                     <option value="1.20.1">1.20.1</option>
                     <option value="1.19.4">1.19.4</option>
+                </select>
+            </div>
+
+            <!-- НОВЫЙ БЛОК: Выбор контента -->
+            <div class="input-wrapper">
+                <label>ТИП КОНТЕНТА</label>
+                <select id="type-select" class="glass-input">
+                    <option value="mod">Моды / Плагины</option>
+                    <option value="modpack">Модпаки (Сборки)</option>
+                    <option value="resourcepack">Текстур-паки</option>
+                    <option value="shader">Шейдеры</option>
                 </select>
             </div>
 
@@ -52,7 +63,7 @@
             <button id="search-btn" class="neon-btn">ИСКАТЬ</button>
         </section>
 
-        <!-- Моя функция: Смарт-теги -->
+        <!-- Смарт-теги -->
         <section class="smart-tags" id="smart-tags">
             <button class="tag-btn" data-tag="optimization">⚡ Оптимизация</button>
             <button class="tag-btn" data-tag="technology">⚙️ Технологии</button>
@@ -65,7 +76,7 @@
             <div class="status-message">СИНХРОНИЗАЦИЯ...</div>
         </section>
 
-        <!-- Твоя функция: Пагинация -->
+        <!-- Пагинация -->
         <section class="pagination">
             <button id="prev-btn" class="page-btn" disabled>◄ НАЗАД</button>
             <span id="page-indicator" class="page-info">СТРАНИЦА 1</span>
@@ -73,7 +84,7 @@
         </section>
     </main>
 
-    <!-- Твоя функция: Плавающая корзина с выбранными модами -->
+    <!-- Плавающая корзина -->
     <div id="cart-panel" class="cart-panel hidden">
         <div class="cart-header">
             <h3>ВЫБРАНО: <span id="cart-count">0</span></h3>
