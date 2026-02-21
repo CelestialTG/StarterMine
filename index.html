@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MC MODS // 2026 MAXIMALISM</title>
+    <title>MOD_NEXUS // СБОРЩИК</title>
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;500;800;900&family=Pixelify+Sans:wght@700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
@@ -17,7 +17,7 @@
     <main class="glass-container">
         <header class="max-header">
             <h1 class="glitch-title">MOD_NEXUS</h1>
-            <p class="subtitle">ПРЯМАЯ УСТАНОВКА ФАЙЛОВ</p>
+            <p class="subtitle">УМНЫЙ СБОРЩИК МОДОВ</p>
         </header>
 
         <section class="max-filters">
@@ -45,18 +45,43 @@
             </div>
 
             <div class="input-wrapper search-wrapper">
-                <label>ИМЯ МОДА / ПЛАГИНА</label>
-                <input type="text" id="search-input" class="glass-input" placeholder="Введите имя (или оставьте пустым)">
+                <label>ПОИСК ПО БАЗЕ</label>
+                <input type="text" id="search-input" class="glass-input" placeholder="Введите название...">
             </div>
 
-            <button id="search-btn" class="neon-btn">ИСКАТЬ // ENTG</button>
+            <button id="search-btn" class="neon-btn">ИСКАТЬ</button>
+        </section>
+
+        <!-- Моя функция: Смарт-теги -->
+        <section class="smart-tags" id="smart-tags">
+            <button class="tag-btn" data-tag="optimization">⚡ Оптимизация</button>
+            <button class="tag-btn" data-tag="technology">⚙️ Технологии</button>
+            <button class="tag-btn" data-tag="magic">🪄 Магия</button>
+            <button class="tag-btn" data-tag="worldgen">🌍 Генерация</button>
+            <button class="tag-btn" data-tag="storage">📦 Склады</button>
         </section>
 
         <section id="results" class="max-results">
-            <!-- Сюда подгрузятся моды -->
             <div class="status-message">СИНХРОНИЗАЦИЯ...</div>
         </section>
+
+        <!-- Твоя функция: Пагинация -->
+        <section class="pagination">
+            <button id="prev-btn" class="page-btn" disabled>◄ НАЗАД</button>
+            <span id="page-indicator" class="page-info">СТРАНИЦА 1</span>
+            <button id="next-btn" class="page-btn">ВПЕРЕД ►</button>
+        </section>
     </main>
+
+    <!-- Твоя функция: Плавающая корзина с выбранными модами -->
+    <div id="cart-panel" class="cart-panel hidden">
+        <div class="cart-header">
+            <h3>ВЫБРАНО: <span id="cart-count">0</span></h3>
+            <button id="clear-cart-btn" class="icon-btn">❌</button>
+        </div>
+        <div id="cart-items" class="cart-items"></div>
+        <button id="download-all-btn" class="neon-btn cart-download-btn">СКАЧАТЬ ВСЕ</button>
+    </div>
 
     <script src="script.js"></script>
 </body>
