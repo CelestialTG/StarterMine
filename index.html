@@ -3,104 +3,126 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MOD_NEXUS // GLOBAL WIKI</title>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;500;800;900&family=Pixelify+Sans:wght@700&display=swap" rel="stylesheet">
+    <title>NEXUS // ABYSS</title>
+    <!-- Элегантные минималистичные шрифты -->
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@400;600;700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <!-- Фоновые неоновые сферы -->
-    <div class="bg-orbs">
-        <div class="orb orb-1"></div>
-        <div class="orb orb-2"></div>
-        <div class="orb orb-3"></div>
+    <!-- Интерактивный свет маяка за курсором -->
+    <div class="cursor-glow"></div>
+
+    <div class="app-layout">
+        <!-- Боковое меню -->
+        <nav class="sidebar">
+            <div class="logo">
+                <h1>NEXUS</h1>
+                <span>DEEP SEA</span>
+            </div>
+            <ul class="nav-links">
+                <li data-target="view-mods" class="active">📦 Моды & Сборки</li>
+                <li data-target="view-skins">🎭 Поиск Скинов</li>
+                <li data-target="view-radar">📡 Радар Серверов</li>
+                <li data-target="view-settings">⚙️ Настройки</li>
+            </ul>
+        </nav>
+
+        <!-- Основной контент -->
+        <main class="main-content">
+            
+            <!-- РАЗДЕЛ 1: МОДЫ И СБОРКИ (Старый добрый функционал в новом стиле) -->
+            <section id="view-mods" class="view-section active">
+                <header class="section-header">
+                    <h2>Хранилище Контента</h2>
+                    <p>Атмосферный поиск модификаций</p>
+                </header>
+                
+                <div class="minimal-filters">
+                    <select id="type-select" class="min-input"><option value="mod">Моды</option><option value="resourcepack">Текстуры</option><option value="shader">Шейдеры</option><option value="modpack">Сборки</option></select>
+                    <select id="version-select" class="min-input"><option value="1.21.11">1.21.11</option><option value="1.21.4">1.21.4</option><option value="1.20.1">1.20.1</option></select>
+                    <select id="loader-select" class="min-input"><option value="fabric">Fabric</option><option value="forge">Forge</option></select>
+                    <input type="text" id="search-input" class="min-input search-bar" placeholder="Имя артефакта...">
+                    <button id="search-btn" class="min-btn">Найти</button>
+                </div>
+
+                <div id="results" class="results-grid"></div>
+            </section>
+
+            <!-- РАЗДЕЛ 2: СТУДИЯ СКИНОВ -->
+            <section id="view-skins" class="view-section hidden">
+                <header class="section-header">
+                    <h2>Идентификация</h2>
+                    <p>Поиск и просмотр обликов игроков</p>
+                </header>
+                
+                <div class="minimal-filters">
+                    <input type="text" id="skin-search-input" class="min-input search-bar" placeholder="Введите никнейм игрока...">
+                    <button id="skin-search-btn" class="min-btn">Найти облик</button>
+                </div>
+
+                <div id="skin-result" class="skin-showcase hidden">
+                    <div class="skin-3d-container">
+                        <img id="skin-3d-render" src="" alt="3D Skin">
+                    </div>
+                    <div class="skin-info">
+                        <h3 id="skin-username">Укажите ник</h3>
+                        <div class="skin-actions">
+                            <a id="btn-download-raw" href="#" download class="min-btn outline">Скачать файл (.png)</a>
+                            <a id="btn-download-avatar" href="#" download class="min-btn outline">Скачать Аватар</a>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- РАЗДЕЛ 3: РАДАР СЕРВЕРОВ -->
+            <section id="view-radar" class="view-section hidden">
+                <header class="section-header">
+                    <h2>Сонар Серверов</h2>
+                    <p>Сканирование сетевых узлов</p>
+                </header>
+
+                <div class="minimal-filters">
+                    <input type="text" id="radar-input" class="min-input search-bar" placeholder="IP адрес (напр. mc.hypixel.net)">
+                    <button id="radar-btn" class="min-btn">Сканаровать</button>
+                </div>
+
+                <div id="radar-result" class="radar-card hidden">
+                    <!-- Заполняется через JS -->
+                </div>
+            </section>
+
+            <!-- РАЗДЕЛ 4: НАСТРОЙКИ (Собственная фишка) -->
+            <section id="view-settings" class="view-section hidden">
+                <header class="section-header">
+                    <h2>Кастомизация</h2>
+                    <p>Адаптация среды под себя</p>
+                </header>
+
+                <div class="settings-grid">
+                    <div class="setting-card">
+                        <h3>Свечение Маяка (Акцент)</h3>
+                        <div class="color-options">
+                            <button class="color-btn" data-color="#ff007f" style="background: #ff007f;"></button>
+                            <button class="color-btn" data-color="#ffb347" style="background: #ffb347;"></button>
+                            <button class="color-btn" data-color="#00f0ff" style="background: #00f0ff;"></button>
+                            <button class="color-btn" data-color="#ffffff" style="background: #ffffff;"></button>
+                        </div>
+                    </div>
+                    <div class="setting-card">
+                        <h3>Текстура фона</h3>
+                        <label><input type="checkbox" id="toggle-noise" checked> Включить бумажный шум</label>
+                    </div>
+                </div>
+            </section>
+
+        </main>
     </div>
 
-    <main class="glass-container">
-        <header class="max-header">
-            <h1 class="glitch-title">MOD_NEXUS</h1>
-            <p class="subtitle">ГЛОБАЛЬНАЯ БАЗА И СБОРЩИК КОНТЕНТА</p>
-        </header>
-
-        <section class="max-filters">
-            <div class="input-wrapper">
-                <label>ВЕРСИЯ</label>
-                <select id="version-select" class="glass-input">
-                    <option value="1.21.11">1.21.11 (Latest)</option>
-                    <option value="1.21.10">1.21.10</option>
-                    <option value="1.21.4">1.21.4</option>
-                    <option value="1.21.1">1.21.1</option>
-                    <option value="1.20.6">1.20.6</option>
-                    <option value="1.20.1">1.20.1</option>
-                    <option value="1.19.4">1.19.4</option>
-                </select>
-            </div>
-
-            <div class="input-wrapper">
-                <label>ТИП КОНТЕНТА</label>
-                <select id="type-select" class="glass-input">
-                    <option value="mod">Моды / Плагины</option>
-                    <option value="modpack">Модпаки (Сборки)</option>
-                    <option value="resourcepack">Текстур-паки</option>
-                    <option value="shader">Шейдеры</option>
-                </select>
-            </div>
-
-            <div class="input-wrapper">
-                <label>ЗАГРУЗЧИК</label>
-                <select id="loader-select" class="glass-input">
-                    <option value="fabric">Fabric</option>
-                    <option value="forge">Forge</option>
-                    <option value="neoforge">NeoForge</option>
-                    <option value="paper">Paper (Плагины)</option>
-                </select>
-            </div>
-
-            <div class="input-wrapper search-wrapper">
-                <label>ПОИСК ПО БАЗЕ</label>
-                <input type="text" id="search-input" class="glass-input" placeholder="Введите название...">
-            </div>
-
-            <button id="search-btn" class="neon-btn">ИСКАТЬ</button>
-        </section>
-
-        <!-- Смарт-теги -->
-        <section class="smart-tags" id="smart-tags">
-            <button class="tag-btn" data-tag="optimization">⚡ Оптимизация</button>
-            <button class="tag-btn" data-tag="technology">⚙️ Технологии</button>
-            <button class="tag-btn" data-tag="magic">🪄 Магия</button>
-            <button class="tag-btn" data-tag="worldgen">🌍 Генерация</button>
-            <button class="tag-btn" data-tag="storage">📦 Склады</button>
-        </section>
-
-        <section id="results" class="max-results">
-            <div class="status-message">СИНХРОНИЗАЦИЯ...</div>
-        </section>
-
-        <!-- Пагинация -->
-        <section class="pagination">
-            <button id="prev-btn" class="page-btn" disabled>◄ НАЗАД</button>
-            <span id="page-indicator" class="page-info">СТРАНИЦА 1</span>
-            <button id="next-btn" class="page-btn">ВПЕРЕД ►</button>
-        </section>
-    </main>
-
-    <!-- Плавающая корзина -->
-    <div id="cart-panel" class="cart-panel hidden">
-        <div class="cart-header">
-            <h3>ВЫБРАНО: <span id="cart-count">0</span></h3>
-            <button id="clear-cart-btn" class="icon-btn">❌</button>
-        </div>
-        <div id="cart-items" class="cart-items"></div>
-        <button id="download-all-btn" class="neon-btn cart-download-btn">СКАЧАТЬ ВСЕ</button>
-    </div>
-
-    <!-- НОВОЕ: ГЛОБАЛЬНОЕ ОКНО ДЕТАЛЕЙ ПРОЕКТА -->
+    <!-- Модальное окно (осталось для модов) -->
     <div id="project-modal" class="modal-overlay hidden">
-        <div class="modal-content glass-container">
-            <button id="close-modal-btn" class="modal-close-btn">✖</button>
-            <div id="modal-body" class="modal-grid">
-                <!-- Контент генерируется через JS -->
-            </div>
+        <div class="modal-content">
+            <button id="close-modal-btn" class="modal-close-btn">×</button>
+            <div id="modal-body"></div>
         </div>
     </div>
 
